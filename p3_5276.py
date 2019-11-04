@@ -66,9 +66,12 @@ def generate_bayesian_Classifier():
                 " ".join(temp_list_string2.split())  # Removes duplicated spaces
                 temp_list2 = temp_list_string2.split()  # Puts each value into a list
                 print("templist:", temp_list2)
+                temp_list2 = reversed(temp_list2) # Makes things easier to find  P(value | p /or/ n)
                 for i in temp_list2:
+                    if i == temp_list2[0]
                     arff[i] = arff[i] + 1
                 total_data_points = total_data_points + 1
+
 
 
     arff_file.close()
