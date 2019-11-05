@@ -18,10 +18,14 @@ def generate_bayesian_Classifier():
         exit()
     arff_file = open("data/" + trainingEx, "r")
     bin_content = ""
-    class_Index = ""
+    _class = ""
     arff = {} # Will be a dictionary identified by its key "relation", and holds dicts of attribute values, which are accessed by the attribute's name
     total_data_points = 0
     read_data = False
+    # The two "sets" vars below are used to help iterate through the arff dictionary for finding P(x | p /or/ n)
+    attribute_values_set = set(())
+    _class_set = set(())
+    naive_assumption = 0
     for line in arff_file:
         if line[0] != '%':  # These are comments in the file
             if read_data == False:
@@ -37,7 +41,6 @@ def generate_bayesian_Classifier():
                         while line[i] != " ":
                             i = i + 1
                         attribute = line[11:i]
-                        class_Index = attribute # The class in an arff file is the last attribute. This var will catch this class the last time this elif is run
                         print("Attribute is:", attribute)
                         # Cleaning up the attribute's values
                         temp_list_string = line[i:-1]
@@ -65,25 +68,42 @@ def generate_bayesian_Classifier():
                 temp_list_string2 = temp_list_string2.replace(',', " ")
                 " ".join(temp_list_string2.split())  # Removes duplicated spaces
                 temp_list2 = temp_list_string2.split()  # Puts each value into a list
-                print("templist:", temp_list2)
-                temp_list2 = reversed(temp_list2) # Makes things easier to find  P(value | p /or/ n)
+                temp_list2.reverse() # Makes things easier to find  P(value | p /or/ n)
                 for i in temp_list2:
-                    if i == temp_list2[0]
-                    arff[i] = arff[i] + 1
+                    if i == temp_list2[0]:
+                        _class = i
+                        if (_class in _class_set) == False:
+                            _class_set.add(_class)
+
+                    else:
+                        if (i in attribute_values_set) == False:
+                            attribute_values_set.add(i)
+                        if (i + '&' + _class) in arff:
+                            arff[(i + '&' + _class)] += 1
+
+                        else: # create new entry for X and p/n
+                            # This is attribute value AND class
+                            arff[(i + '&' + _class)] = 1
+
+                    if i in arff:
+                        arff[i] = arff[i] + 1
+
+                    else: # Create a new entry for attribute value
+                        arff[i] = 1
                 total_data_points = total_data_points + 1
-
-
-
     arff_file.close()
+    print("Set of attribute values created:", attribute_values_set)
+    print("Set of class values created:", _class_set)
     print("File contents read and organized: ", arff)
+
+    print("Now calculating Naive_Bayesian_Thm...")
+
     # bin_content = Bayes_Thm()
     print("Classifier created: ", bin_content)
     print(" . Please enter a name of the file that you want to save your classifier into: ")
     filename = input()
     file = open(filename + ".bin", "x")
     file.write(bin_content)
-
-
 
 
 
