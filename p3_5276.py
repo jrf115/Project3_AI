@@ -16,11 +16,10 @@ def generate_bayesian_Classifier():
     print("Enter the filename of input data consisting of attributes and training examples in ARFF (Weka) format")
     trainingEx = input()
     if os.path.exists("data/" + trainingEx) == False:
-        print("Error: arff file could not be opened. Exiting...")
-        exit()
+        print("Error: arff file could not be opened. Try again!")
+        trainingEx = input()
 
     arff_file = open("data/" + trainingEx, "r")
-    bin_content = ""
     _class = ""
     arff = {}  # Will be a dictionary identified by its key "relation", and holds dicts of attribute values, which are accessed by the attribute's name
     total_data_points = 0
@@ -93,38 +92,37 @@ def generate_bayesian_Classifier():
                 temp_list2 = temp_list_string2.split()  # Puts each value into a list
                 temp_list2.reverse()  # Makes things easier to find  P(value | p /or/ n)
                 for i in temp_list2:
-                    f = 0
                     if i == temp_list2[0]:
                         _class = i
                         if not (_class in _class_set):
-                            _class_set.add(_class)
+                            print("ERROR!!!: Missing entry for class member: " + _class + "!")
+                            #exit(1)
 
                     else:
                         if not (i in attribute_values_set):
-                            attribute_values_set.add(i)
+                            attribute_values_set.add(i) # Subject to be removed.
 
                         if (i + '&' + _class) in arff:
                             arff[(i + '&' + _class)] += 1
 
                         else:
-                            print("ERROR!!!: Missing entry for X and p/n! This is attribute value AND class!")
-                            exit(1)
+                            print("ERROR!!!: Missing entry for " + i + " and " + _class + "! This is attribute value AND class!")
+                            #exit(1)
 
                     if i in arff:
-                        arff[i] = arff[i] + 1
+                        arff[i] += 1
 
                     else:  # Create a new entry for attribute value
-                        arff[i] = 1
+                        print("ERROR: Missing attribute value" + i +"!")
+                        # exit(1)
                 total_data_points = total_data_points + 1
     arff_file.close()
-
-    if not "overcast&no" in arff:
-        print("MISSING overcast&no")
 
     print("Data read in. Total of", total_data_points,". Arff file closed.")
     print("Set of attribute values created:", attribute_values_set)
     print("Set of class values created:", _class_set)
     print("File contents read and organized: ", arff)
+
 
     print("\n\nPlease enter a name of the file that you want to save your classifier into: ")
     filename = input()
@@ -150,8 +148,9 @@ def generate_bayesian_Classifier():
     """
     print("Now calculating Naive_Bayesian_Classifier...")
     file = open(filename + ".bin", "x")
+    bin_content = arff["relation"] + '\n'
     for c in _class_set:
-        bin_content = bin_content + c + ',' + str(arff[c] / total_data_points) + '\n'
+        bin_content += c + ',' + str(arff[c] / total_data_points) + '\n'
 
     for c in _class_set:
         print('class', c)
