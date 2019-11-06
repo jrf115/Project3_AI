@@ -3,21 +3,21 @@
 @attribute outlook { sunny, overcast, rain }
 @attribute temperature { hot, mild, cool }
 @attribute humidity { high, normal }
-@attribute wind { weak, strong }
+@attribute wind { false, true }
 @attribute playTennis { no, yes}
 
 @data
-sunny, hot, high, weak, no
-sunny, hot, high, strong, no
-overcast, hot, high, weak, yes
-rain, mild, high, weak, yes
-rain, cool, normal, weak, yes
-rain, cool, normal, strong, no
-overcast, cool, normal, strong, yes
-sunny, mild, high, weak, no
-sunny, cool, normal, weak, yes
-rain, mild, normal, weak, yes
-sunny, mild, normal, strong, yes
-overcast, mild, high, strong, yes
-overcast, hot, normal, weak, yes
-rain, mild, high, strong, no
+sunny, hot, high, false, no
+sunny, hot, high, true, no
+overcast, hot, high, false, yes
+rain, mild, high, false, yes
+rain, cool, normal, false, yes
+rain, cool, normal, true, no
+overcast, cool, normal, true, yes
+sunny, mild, high, false, no
+sunny, cool, normal, false, yes
+rain, mild, normal, false, yes
+sunny, mild, normal, true, yes
+overcast, mild, high, true, yes
+overcast, hot, normal, false, yes
+rain, mild, high, true, no

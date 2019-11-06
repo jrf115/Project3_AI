@@ -103,15 +103,44 @@ def generate_bayesian_Classifier():
     print("Set of class values created:", _class_set)
     print("File contents read and organized: ", arff)
 
-    print("Now calculating Naive_Bayesian_Thm...")
-
     # bin_content = Bayes_Thm()
     print("Classifier created: ", bin_content)
     print(" . Please enter a name of the file that you want to save your classifier into: ")
     filename = input()
-    file = open(filename + ".bin", "x")
-    file.write(bin_content)
 
+    # Bin Format:
+    """                                                                 Tennis example
+    P(p),someNumber                                                     no,5/14
+    P(n),someNumber                                                     yes,9/14
+    .
+    .
+    .... to how many class 'n" values the arff file has                     # 'yes' is the last class for Tennis example
+    P(X1|n),someNumber                                                  sunny&no,3/5
+    P(X2|n),someNumber                                                  overcast&no,0
+    .                                                                   .
+    .                                                                   .   
+    .... to the very last generic attribute value                       strong&no,2/5
+    P(X1|p),someNumber                                                  sunny&yes,2/9
+    P(X2|p),someNumber                                                  overcast&yes,4/9
+    .                                                                   .
+    .                                                                   .
+    .... to the very last generic attribute value                       sunny&yes,6/9
+    ........ to how many class "n/p/.." values there are.                   # 'yes' is the last class for Tennis example
+    """
+    print("Now calculating Naive_Bayesian_Classifier...")
+    file = open(filename + ".bin", "x")
+    class_list = []
+    for c in _class_set:
+       bin_content = bin_content + c + ',' + str(arff[c] / total_data_points) + '\n'
+
+    for a in attribute_dict:
+        print(a)
+        for v in attribute_dict[a]:
+            print("  ", v)
+    print("bin_content is ", bin_content)
+    file.write(bin_content)
+    print("Naive_Bayesian_Classifier written to ", filename, ".bin", sep="")
+    file.close()
 
 def test_bayesian_Classifier():
     print("Enter a model file saved previously")
