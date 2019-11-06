@@ -25,6 +25,7 @@ def generate_bayesian_Classifier():
     arff = {}  # Will be a dictionary identified by its key "relation", and holds dicts of attribute values, which are accessed by the attribute's name
     total_data_points = 0
     read_data = False
+    value_and_class = False
     # The two "sets" vars below are used to help iterate through the arff dictionary for finding P(x | p /or/ n)
     attribute_values_set = set(())
     attribute_dict = {}
@@ -61,6 +62,10 @@ def generate_bayesian_Classifier():
                             arff[v] = 0 # Will be a dictionary, where one function it has, is that defines how many times a value occurs in data set. Key is that attribute's value, and definition is 0 by default.
                             attribute_dict[attribute].add(v)
 
+                        # The last time these 2 lines is run it should capture the class attributes
+                        _class = attribute
+                        _class_set = attribute_dict[_class]
+
                         print("Printing attribute", attribute, "contents:", attribute_dict[attribute])
 
                     elif line.find("@DATA") == 0 or 0 == line.find("@data"):
@@ -68,7 +73,20 @@ def generate_bayesian_Classifier():
                         read_data = True
 
             else:  # Read data
+                # After the attributes are read, we need to add create new entries for X and p/n.
+                # This 'if' block only needs run once
+                if not(value_and_class):
+                    # create new entrys for X and p/n
+                    # This is attribute value AND class
+                    for c in _class_set:
+                        for a in attribute_dict:
+                            for v in attribute_dict[a]:
+                                if not (v in _class_set): # We don't want a class and class entry
+                                    arff[(v + '&' + c)] = 0
+                    value_and_class = True
+
                 # From reading the data, we need to find P(p), P(n), P(xi | p) and P(xi | n)
+                # So we will add a number for each P(xi | p) and P(xi | n) we find
                 temp_list_string2 = line
                 temp_list_string2 = temp_list_string2.replace(',', " ")
                 " ".join(temp_list_string2.split())  # Removes duplicated spaces
@@ -88,9 +106,9 @@ def generate_bayesian_Classifier():
                         if (i + '&' + _class) in arff:
                             arff[(i + '&' + _class)] += 1
 
-                        else:  # create new entry for X and p/n
-                            # This is attribute value AND class
-                            arff[(i + '&' + _class)] = 1
+                        else:
+                            print("ERROR!!!: Missing entry for X and p/n! This is attribute value AND class!")
+                            exit(1)
 
                     if i in arff:
                         arff[i] = arff[i] + 1
@@ -99,8 +117,10 @@ def generate_bayesian_Classifier():
                         arff[i] = 1
                 total_data_points = total_data_points + 1
     arff_file.close()
+
     if not "overcast&no" in arff:
         print("MISSING overcast&no")
+
     print("Data read in. Total of", total_data_points,". Arff file closed.")
     print("Set of attribute values created:", attribute_values_set)
     print("Set of class values created:", _class_set)
