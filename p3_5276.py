@@ -18,6 +18,7 @@ def generate_bayesian_Classifier():
     if os.path.exists("data/" + trainingEx) == False:
         print("Error: arff file could not be opened. Exiting...")
         exit()
+
     arff_file = open("data/" + trainingEx, "r")
     bin_content = ""
     _class = ""
@@ -28,7 +29,6 @@ def generate_bayesian_Classifier():
     attribute_values_set = set(())
     attribute_dict = {}
     _class_set = set(())
-    naive_assumption = 0
     for line in arff_file:
         if line[0] != '%':  # These are comments in the file
             if not read_data:
@@ -57,9 +57,10 @@ def generate_bayesian_Classifier():
                         temp_list = temp_list_string.split()  # Puts each value into a list
                         # Initialize each individual attribute value of this list into a dictionary.
 
-                        for f in temp_list:
-                            arff[f] = 0 # Will be a dictionary, where one function it has, is that defines how many times a value occurs in data set. Key is that attribute's value, and definition is 0 by default.
-                            attribute_dict[attribute].add(f)
+                        for v in temp_list:
+                            arff[v] = 0 # Will be a dictionary, where one function it has, is that defines how many times a value occurs in data set. Key is that attribute's value, and definition is 0 by default.
+                            attribute_dict[attribute].add(v)
+
                         print("Printing attribute", attribute, "contents:", attribute_dict[attribute])
 
                     elif line.find("@DATA") == 0 or 0 == line.find("@data"):
@@ -98,14 +99,14 @@ def generate_bayesian_Classifier():
                         arff[i] = 1
                 total_data_points = total_data_points + 1
     arff_file.close()
+    if not "overcast&no" in arff:
+        print("MISSING overcast&no")
     print("Data read in. Total of", total_data_points,". Arff file closed.")
     print("Set of attribute values created:", attribute_values_set)
     print("Set of class values created:", _class_set)
     print("File contents read and organized: ", arff)
 
-    # bin_content = Bayes_Thm()
-    print("Classifier created: ", bin_content)
-    print(" . Please enter a name of the file that you want to save your classifier into: ")
+    print("\n\nPlease enter a name of the file that you want to save your classifier into: ")
     filename = input()
 
     # Bin Format:
@@ -129,14 +130,20 @@ def generate_bayesian_Classifier():
     """
     print("Now calculating Naive_Bayesian_Classifier...")
     file = open(filename + ".bin", "x")
-    class_list = []
     for c in _class_set:
-       bin_content = bin_content + c + ',' + str(arff[c] / total_data_points) + '\n'
+        bin_content = bin_content + c + ',' + str(arff[c] / total_data_points) + '\n'
 
-    for a in attribute_dict:
-        print(a)
-        for v in attribute_dict[a]:
-            print("  ", v)
+    for c in _class_set:
+        print('class', c)
+        for a in attribute_dict:
+            print('attribute', a)
+            for v in attribute_dict[a]:
+                relative_freq = str(v + '&' + c)
+                print('attr_value:', v,'and',c)
+                if relative_freq in arff:  # If the P(Xi | C) is in this dict...
+                    p = str(arff[relative_freq] / arff[c]) # Function P(Xi|C)
+                    bin_content = bin_content + (relative_freq + ',') + p + '\n'
+                    print((a + '&' + c + ',') + p)
     print("bin_content is ", bin_content)
     file.write(bin_content)
     print("Naive_Bayesian_Classifier written to ", filename, ".bin", sep="")
