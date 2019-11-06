@@ -58,7 +58,6 @@ def generate_bayesian_Classifier():
                         # Initialize each individual attribute value of this list into a dictionary.
 
                         for f in temp_list:
-                            print("Printing temp_list[f]", f)
                             arff[f] = 0 # Will be a dictionary, where one function it has, is that defines how many times a value occurs in data set. Key is that attribute's value, and definition is 0 by default.
                             attribute_dict[attribute].add(f)
                         print("Printing attribute", attribute, "contents:", attribute_dict[attribute])
