@@ -20,15 +20,15 @@ def generate_bayesian_Classifier():
         trainingEx = input()
 
     arff_file = open("data/" + trainingEx, "r")
-    _class = ""
     arff = {}  # Will be a dictionary identified by its key "relation", and holds dicts of attribute values, which are accessed by the attribute's name
+    _class = ""
     total_data_points = 0
     read_data = False
     value_and_class = False
     # The two "sets" vars below are used to help iterate through the arff dictionary for finding P(x | p /or/ n)
+    _class_set = set(())
     attribute_values_set = set(())
     attribute_dict = {}
-    _class_set = set(())
     for line in arff_file:
         if line[0] != '%':  # These are comments in the file
             if not read_data:
@@ -42,7 +42,7 @@ def generate_bayesian_Classifier():
                         print("Found @ATTRIBUTE!")
                         i = 11
                         while line[i] != " ":
-                            i = i + 1
+                            i += 1
                         attribute = line[11:i]
                         print("Attribute is:", attribute)
                         attribute_dict[attribute] = set(())
@@ -74,7 +74,7 @@ def generate_bayesian_Classifier():
             else:  # Read data
                 # After the attributes are read, we need to add create new entries for X and p/n.
                 # This 'if' block only needs run once
-                if not(value_and_class):
+                if not value_and_class:
                     # create new entrys for X and p/n
                     # This is attribute value AND class
                     for c in _class_set:
@@ -124,8 +124,7 @@ def generate_bayesian_Classifier():
     print("File contents read and organized: ", arff)
 
 
-    print("\n\nPlease enter a name of the file that you want to save your classifier into: ")
-    filename = input()
+    print("\n\n")
 
     # Bin Format:
     """                                                                 Tennis example
@@ -136,7 +135,7 @@ def generate_bayesian_Classifier():
     .... to how many class 'n" values the arff file has                     # 'yes' is the last class for Tennis example
     P(X1|n),someNumber                                                  sunny&no,3/5
     P(X2|n),someNumber                                                  overcast&no,0
-    .                                                                   .
+    # P(C|X) = P(X|C) * P(C)  /  P(X) #                                .
     .                                                                   .   
     .... to the very last generic attribute value                       strong&no,2/5
     P(X1|p),someNumber                                                  sunny&yes,2/9
@@ -147,6 +146,7 @@ def generate_bayesian_Classifier():
     ........ to how many class "n/p/.." values there are.                   # 'yes' is the last class for Tennis example
     """
     print("Now calculating Naive_Bayesian_Classifier...")
+    filename = trainingEx[:-4]
     file = open(filename + ".bin", "x")
     bin_content = arff["relation"] + '\n'
     for c in _class_set:
@@ -167,6 +167,7 @@ def generate_bayesian_Classifier():
     file.write(bin_content)
     print("Naive_Bayesian_Classifier written to ", filename, ".bin", sep="")
     file.close()
+
 
 def test_bayesian_Classifier():
     print("Enter a model file saved previously")
@@ -203,7 +204,8 @@ def menu_1():
 
 # We are required to use py_nb() as the function to execute our program
 def py_nb():
-    menu_1()
+    while True:
+        menu_1()
 
 
 def main():
