@@ -15,7 +15,7 @@ def Bayes_Thm(XandC, rel_freq, const):
 def generate_bayesian_Classifier():
     print("Enter the filename of input data consisting of attributes and training examples in ARFF (Weka) format")
     trainingEx = input()
-    if os.path.exists("data/" + trainingEx) == False:
+    while not os.path.exists("data/" + trainingEx):
         print("Error: arff file could not be opened. Try again!")
         trainingEx = input()
 
@@ -146,7 +146,7 @@ def generate_bayesian_Classifier():
     ........ to how many class "n/p/.." values there are.                   # 'yes' is the last class for Tennis example
     """
     print("Now calculating Naive_Bayesian_Classifier...")
-    filename = trainingEx[:-4]
+    filename = trainingEx[:-5]
     file = open(filename + ".bin", "x")
     bin_content = arff["relation"] + '\n'
     for c in _class_set:
@@ -172,8 +172,47 @@ def generate_bayesian_Classifier():
 def test_bayesian_Classifier():
     print("Enter a model file saved previously")
     model_file = input()
+    while not os.path.exists(model_file) or model_file[-4:] != ".bin":
+        print("Either the file doesn't exist, or the file is not in bin format")
+        model_file = input()
+    print("Now enter a testing data file in ARFF format:")
+    testing_file = input()
+    '''while not os.path.exists(testing_file):
+        print("Can't find the file, try again.")
+        testing_file = input() '''
+    bin_file = open(model_file, 'r')
+    relation = ""
+    classes = dict()
+    a_posteris = dict()
+    line_number = 1
+
+    # Reading in Classifier
+    for line in bin_file:
+        if line_number == 1:
+            relation = line[:1]
+
+        else:
+            apost_index = line.find(',')
+            print("apost_index", apost_index)
+            if line.find('&') == -1:
+                class_str = line[:apost_index]
+                chance_str = line[apost_index + 1:]
+                classes[class_str] = chance_str
+                print("Class:", class_str, "line", chance_str)
+            else:
+                a_post_str = line[:apost_index]
+                chance_str = line[apost_index + 1:]
+                a_posteris[a_post_str] = chance_str
+
+    # Reading in sample testing arffFile
 
 
+
+    # Reading in
+
+
+        line_number += 1
+    bin_file.close()
 def apply_bayesian_Classifier():
     print("Enter values of condition attributes... ")
 
