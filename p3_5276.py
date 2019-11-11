@@ -189,7 +189,7 @@ def test_bayesian_Classifier():
     # Reading in Classifier
     for line in bin_file:
         if line_number == 1:
-            relation = line[:1]
+            relation = line[:-1]
 
         else:
             apost_index = line.find(',')
@@ -203,9 +203,17 @@ def test_bayesian_Classifier():
                 a_post_str = line[:apost_index]
                 chance_str = line[apost_index + 1:]
                 a_posteris[a_post_str] = chance_str
-
+        line_number += 1
     # Reading in sample testing arffFile
 
+    line_number = 1
+    for line in testing_file:
+        if line_number == 1:
+            print("Line", line, "becomes", line[:-1])
+            print("Relations between classifier and data test file are not the same:", relation, "and", line[:-1])
+            if line[:-1] != relation:
+                #raise Exception("Relations between classifier and data test file are not the same:", relation, "and", line[-1:])
+                return
 
 
     # Reading in
