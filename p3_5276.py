@@ -209,24 +209,24 @@ def test_bayesian_Classifier():
                 a_posteris[a_post_str] = chance_str
         line_number += 1
 
+    bin_file.close()
+
     # Reading in sample testing arffFile
     total_data_points, _class_set, attribute_values_set, attribute_dict, arff = read_ARFF(testing_file)
 
     if arff["relation"] != relation:
-                raise Exception("Relations between classifier and data test file are not the same:", relation, "and", line[-1:])
-                return
+        raise Exception("Relations between classifier and data test file are not the same:", relation, "and", line[-1:])
+        return
 
 
     # Formulating and Printing Confusion Matrix
-    matrix_class_totals = []
+    ''' Finding total for each "actual" (or class) count (What you see in the right most column)'''
+    matrix_class_totals = dict()
     for c in _class_set:
         print("Class", c, arff[c])
         matrix_class_totals[c] = arff[c]
 
 
-
-        line_number += 1
-    bin_file.close()
 def apply_bayesian_Classifier():
     print("Enter values of condition attributes... ")
 
