@@ -217,7 +217,12 @@ def test_bayesian_Classifier():
                 return
 
 
-    # Reading in
+    # Formulating and Printing Confusion Matrix
+    matrix_class_totals = []
+    for c in _class_set:
+        print("Class", c, arff[c])
+        matrix_class_totals[c] = arff[c]
+
 
 
         line_number += 1
