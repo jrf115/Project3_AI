@@ -12,14 +12,12 @@ def Bayes_Thm(XandC, rel_freq, const):
     return (XandC * rel_freq) / const
 
 
-def generate_bayesian_Classifier():
-    print("Enter the filename of input data consisting of attributes and training examples in ARFF (Weka) format")
-    trainingEx = input()
-    while not os.path.exists("data/" + trainingEx):
+def read_ARFF(trainingEx):
+    while not os.path.exists(trainingEx):
         print("Error: arff file could not be opened. Try again!")
         trainingEx = input()
 
-    arff_file = open("data/" + trainingEx, "r")
+    arff_file = open(trainingEx, "r")
     arff = {}  # Will be a dictionary identified by its key "relation", and holds dicts of attribute values, which are accessed by the attribute's name
     _class = ""
     total_data_points = 0
@@ -122,7 +120,13 @@ def generate_bayesian_Classifier():
     print("Set of attribute values created:", attribute_values_set)
     print("Set of class values created:", _class_set)
     print("File contents read and organized: ", arff)
+    return total_data_points, _class_set, attribute_values_set, attribute_dict, arff
 
+
+def generate_bayesian_Classifier():
+    print("Enter the filename of input data consisting of attributes and training examples in ARFF (Weka) format. (You might use the existing arffs in the data folder)")
+    trainingEx = input()
+    total_data_points, _class_set, attribute_values_set, attribute_dict, arff = read_ARFF(trainingEx)
 
     print("\n\n")
 
@@ -177,9 +181,9 @@ def test_bayesian_Classifier():
         model_file = input()
     print("Now enter a testing data file in ARFF format:")
     testing_file = input()
-    '''while not os.path.exists(testing_file):
+    while not os.path.exists(testing_file):
         print("Can't find the file, try again.")
-        testing_file = input() '''
+        testing_file = input()
     bin_file = open(model_file, 'r')
     relation = ""
     classes = dict()
@@ -204,15 +208,12 @@ def test_bayesian_Classifier():
                 chance_str = line[apost_index + 1:]
                 a_posteris[a_post_str] = chance_str
         line_number += 1
-    # Reading in sample testing arffFile
 
-    line_number = 1
-    for line in testing_file:
-        if line_number == 1:
-            print("Line", line, "becomes", line[:-1])
-            print("Relations between classifier and data test file are not the same:", relation, "and", line[:-1])
-            if line[:-1] != relation:
-                #raise Exception("Relations between classifier and data test file are not the same:", relation, "and", line[-1:])
+    # Reading in sample testing arffFile
+    total_data_points, _class_set, attribute_values_set, attribute_dict, arff = read_ARFF(testing_file)
+
+    if arff["relation"] != relation:
+                raise Exception("Relations between classifier and data test file are not the same:", relation, "and", line[-1:])
                 return
 
 
