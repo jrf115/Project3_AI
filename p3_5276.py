@@ -129,7 +129,7 @@ def read_ARFF(trainingEx):
 def generate_bayesian_Classifier():
     print("Enter the filename of input data consisting of attributes and training examples in ARFF (Weka) format. (You might use the existing arffs in the data folder)")
     trainingEx = input()
-    total_data_points, data_points, class_set, attribute_values_set, attribute_dict, arff = read_ARFF(trainingEx)
+    total_data_points, data_points, _class_set, attribute_values_set, attribute_dict, arff = read_ARFF(trainingEx)
 
     print("\n\n")
 
@@ -215,7 +215,7 @@ def test_bayesian_Classifier():
     bin_file.close()
 
     # Reading in sample testing arffFile
-    total_data_points, data_points,_class_set, attribute_values_set, attribute_dict, arff = read_ARFF(testing_file)
+    total_data_points, data_points, _class_set, attribute_values_set, attribute_dict, arff = read_ARFF(testing_file)
 
     if arff["relation"] != relation:
         raise Exception("Relations between classifier and data test file are not the same:", relation, "and", line[-1:])
@@ -234,8 +234,14 @@ def test_bayesian_Classifier():
     matrix_predict_class_totals = dict()
     for c in _class_set:
         matrix_predict_class_totals[c] = 0
-    # Initialize main table
+
+    # Initialize main table "body"
     matrix_main = dict()
+    for actual_c in _class_set:
+        row = "actual:" + actual_c
+        for predict_c in _class_set:
+            column = "predicted:" + predict_c
+            matrix_main[row + ',' + column] = 0
 
     # To find the prediction, you must compare the sample data point,ignoring its class, with all class posteri combinations.
     # THe class posteri combination that has the highest percentage is the prediction for the set. (Look at pp slide 38)
@@ -248,10 +254,8 @@ def test_bayesian_Classifier():
             classify = arff[points_attributes_list[-1]]  # Grab the probability of the current class
             for p_a in points_attributes_list:
                 if p_a != points_attributes_list[-1]:
-                        print("Debug", a_posteris[p_a + '&' + c])
                         if (p_a + '&' + c) in a_posteris and a_posteris[p_a + '&' + c] != 0:
                             classify *= a_posteris[p_a + '&' + c]
-            print("Multiply arff[c]", classes[c])
             classify *= classes[c]
             classify_dict[c] = classify # We are comparing which class probability "version" is higher.
 
@@ -263,7 +267,14 @@ def test_bayesian_Classifier():
                 classifier = classify_dict[c]
                 predicted = c
 
-        print("Classify_Dict", classify_dict)
+        matrix_predict_class_totals[c] += 1
+
+        row = "actual:" + points_attributes_list[-1]
+        column = "predicted:" + predicted
+        matrix_main[row + ',' + column] += 1
+
+        print("Classify_Dict for datapoint:", classify_dict)
+        print("Resulting Prediciton: ", predicted)
 
     # Printing Confusion Matrix
 
