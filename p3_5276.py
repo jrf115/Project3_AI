@@ -252,12 +252,14 @@ def test_bayesian_Classifier():
         print("Finding prediction of datapoint:", d)
         classify_dict = {}
         for c in _class_set:
-            classify = arff[points_attributes_list[-1]]  # Grab the probability of the current class
+            classify = 1
             for p_a in points_attributes_list:
                 if p_a != points_attributes_list[-1]:
                         if (p_a + '&' + c) in a_posteris:
                             classify *= a_posteris[p_a + '&' + c]
-            classify *= classes[c]
+                        else:
+                            print("ERROR: an a_posteris could not be found:", p_a + '&' + c)
+            classify *= classes[c] # Grab the probability of the current class and multiply it to P(X|p)
             classify_dict[c] = classify # We are comparing which class probability "version" is higher.
 
         # Compare the class probabilities
