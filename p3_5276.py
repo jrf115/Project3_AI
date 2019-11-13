@@ -308,9 +308,9 @@ def apply_bayesian_Classifier():
 
 # This is the top menu of the program
 def menu_1():
-    print("1. Learn a Naive Bayesian classifierfrom data")
+    print("1. Learn a Naive Bayesian classifier from data")
     print("2. Load and test accuracy of a naive Bayesian classifier.")
-    print("3. Apply a naive Bayesian classifierto new cases.")
+    print("3. Apply a naive Bayesian classifier to new cases.")
     print("4. Quit")
     selection = input()
     while selection != '1' and selection != '2' and selection != '3' and selection != '4':
