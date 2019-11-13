@@ -255,7 +255,7 @@ def test_bayesian_Classifier():
             classify = arff[points_attributes_list[-1]]  # Grab the probability of the current class
             for p_a in points_attributes_list:
                 if p_a != points_attributes_list[-1]:
-                        if (p_a + '&' + c) in a_posteris and a_posteris[p_a + '&' + c] != 0:
+                        if (p_a + '&' + c) in a_posteris:
                             classify *= a_posteris[p_a + '&' + c]
             classify *= classes[c]
             classify_dict[c] = classify # We are comparing which class probability "version" is higher.
