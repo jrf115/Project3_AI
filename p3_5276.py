@@ -203,13 +203,13 @@ def test_bayesian_Classifier():
             # print("apost_index", apost_index)
             if line.find('&') == -1:
                 class_str = line[:apost_index]
-                chance_str = line[apost_index + 1:]
-                classes[class_str] = chance_str
+                chance_str = line[apost_index + 1:-1]
+                classes[class_str] = float(chance_str)
                 print("Class:", class_str, "line", chance_str)
             else:
                 a_post_str = line[:apost_index]
                 chance_str = line[apost_index + 1:]
-                a_posteris[a_post_str] = chance_str
+                a_posteris[a_post_str] = float(chance_str)
         line_number += 1
 
     bin_file.close()
@@ -230,18 +230,42 @@ def test_bayesian_Classifier():
         matrix_actual_class_totals[c] = arff[c]
 
     ''' Finding total for each "Predicted class" count (what you se in the bottom most column)'''
+    # Initialize prediction totals
     matrix_predict_class_totals = dict()
+    for c in _class_set:
+        matrix_predict_class_totals[c] = 0
+    # Initialize main table
+    matrix_main = dict()
+
     # To find the prediction, you must compare the sample data point,ignoring its class, with all class posteri combinations.
     # THe class posteri combination that has the highest percentage is the prediction for the set. (Look at pp slide 38)
     for d in data_points:
         temp_string = d.replace(',', ' ')
-        temp_list = temp_string.split()
-        for l in temp_list:
-            if l != temp_list[-1]:
-                for p in a_posteris:
-                    for c in _class_set:
-                        if p.find(l) and p.find(c)
-            else:
+        points_attributes_list = temp_string.split()
+        print("Finding prediction of datapoint:", d)
+        classify_dict = {}
+        for c in _class_set:
+            classify = arff[points_attributes_list[-1]]  # Grab the probability of the current class
+            for p_a in points_attributes_list:
+                if p_a != points_attributes_list[-1]:
+                        print("Debug", a_posteris[p_a + '&' + c])
+                        if (p_a + '&' + c) in a_posteris and a_posteris[p_a + '&' + c] != 0:
+                            classify *= a_posteris[p_a + '&' + c]
+            print("Multiply arff[c]", classes[c])
+            classify *= classes[c]
+            classify_dict[c] = classify # We are comparing which class probability "version" is higher.
+
+        # Compare the class probabilities
+        classifier = int()
+        predicted = str()
+        for c in classify_dict:
+            if classify_dict[c] >= classifier:
+                classifier = classify_dict[c]
+                predicted = c
+
+        print("Classify_Dict", classify_dict)
+
+    # Printing Confusion Matrix
 
 
 def apply_bayesian_Classifier():
