@@ -20,6 +20,7 @@ def read_ARFF(trainingEx):
     arff_file = open(trainingEx, "r")
     arff = {}  # Will be a dictionary identified by its key "relation", and holds dicts of attribute values, which are accessed by the attribute's name
     _class = ""
+    data_points = []
     total_data_points = 0
     read_data = False
     value_and_class = False
@@ -84,6 +85,7 @@ def read_ARFF(trainingEx):
 
                 # From reading the data, we need to find P(p), P(n), P(xi | p) and P(xi | n)
                 # So we will add a number for each P(xi | p) and P(xi | n) we find
+                data_points.append(line[:-1])
                 temp_list_string2 = line
                 temp_list_string2 = temp_list_string2.replace(',', " ")
                 " ".join(temp_list_string2.split())  # Removes duplicated spaces
@@ -116,17 +118,18 @@ def read_ARFF(trainingEx):
                 total_data_points = total_data_points + 1
     arff_file.close()
 
+    print("Data points:", data_points)
     print("Data read in. Total of", total_data_points,". Arff file closed.")
     print("Set of attribute values created:", attribute_values_set)
     print("Set of class values created:", _class_set)
     print("File contents read and organized: ", arff)
-    return total_data_points, _class_set, attribute_values_set, attribute_dict, arff
+    return total_data_points, data_points,_class_set, attribute_values_set, attribute_dict, arff
 
 
 def generate_bayesian_Classifier():
     print("Enter the filename of input data consisting of attributes and training examples in ARFF (Weka) format. (You might use the existing arffs in the data folder)")
     trainingEx = input()
-    total_data_points, _class_set, attribute_values_set, attribute_dict, arff = read_ARFF(trainingEx)
+    total_data_points, data_points, class_set, attribute_values_set, attribute_dict, arff = read_ARFF(trainingEx)
 
     print("\n\n")
 
@@ -197,7 +200,7 @@ def test_bayesian_Classifier():
 
         else:
             apost_index = line.find(',')
-            print("apost_index", apost_index)
+            # print("apost_index", apost_index)
             if line.find('&') == -1:
                 class_str = line[:apost_index]
                 chance_str = line[apost_index + 1:]
@@ -212,7 +215,7 @@ def test_bayesian_Classifier():
     bin_file.close()
 
     # Reading in sample testing arffFile
-    total_data_points, _class_set, attribute_values_set, attribute_dict, arff = read_ARFF(testing_file)
+    total_data_points, data_points,_class_set, attribute_values_set, attribute_dict, arff = read_ARFF(testing_file)
 
     if arff["relation"] != relation:
         raise Exception("Relations between classifier and data test file are not the same:", relation, "and", line[-1:])
@@ -220,11 +223,25 @@ def test_bayesian_Classifier():
 
 
     # Formulating and Printing Confusion Matrix
-    ''' Finding total for each "actual" (or class) count (What you see in the right most column)'''
-    matrix_class_totals = dict()
+    ''' Finding total for each "actual class" count (What you see in the right most column)'''
+    matrix_actual_class_totals = dict()
     for c in _class_set:
         print("Class", c, arff[c])
-        matrix_class_totals[c] = arff[c]
+        matrix_actual_class_totals[c] = arff[c]
+
+    ''' Finding total for each "Predicted class" count (what you se in the bottom most column)'''
+    matrix_predict_class_totals = dict()
+    # To find the prediction, you must compare the sample data point,ignoring its class, with all class posteri combinations.
+    # THe class posteri combination that has the highest percentage is the prediction for the set. (Look at pp slide 38)
+    for d in data_points:
+        temp_string = d.replace(',', ' ')
+        temp_list = temp_string.split()
+        for l in temp_list:
+            if l != temp_list[-1]:
+                for p in a_posteris:
+                    for c in _class_set:
+                        if p.find(l) and p.find(c)
+            else:
 
 
 def apply_bayesian_Classifier():
