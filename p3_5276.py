@@ -224,11 +224,12 @@ def test_bayesian_Classifier():
 
     # Formulating and Printing Confusion Matrix
     ''' Finding total for each "actual class" count (What you see in the right most column)'''
+    print('\n\nNow formulating Confusion Matrix...\n')
     matrix_actual_class_totals = dict()
     for c in _class_set:
         print("Class", c, arff[c])
         matrix_actual_class_totals[c] = arff[c]
-
+    print()
     ''' Finding total for each "Predicted class" count (what you se in the bottom most column)'''
     # Initialize prediction totals
     matrix_predict_class_totals = dict()
@@ -267,7 +268,7 @@ def test_bayesian_Classifier():
                 classifier = classify_dict[c]
                 predicted = c
 
-        matrix_predict_class_totals[c] += 1
+        matrix_predict_class_totals[predicted] += 1
 
         row = "actual:" + points_attributes_list[-1]
         column = "predicted:" + predicted
@@ -276,7 +277,27 @@ def test_bayesian_Classifier():
         print("Classify_Dict for datapoint:", classify_dict)
         print("Resulting Prediciton: ", predicted)
 
+    ###################################################################
     # Printing Confusion Matrix
+    print("\n\nPrinting Confusion Matrix of:", testing_file, "\n===================================================")
+
+    print("n = ", total_data_points, "\t\t\t\t", sep = '', end='')
+    # The column headers
+    for predicted in _class_set:
+        print("Predicted:", predicted, "\t\t\t\t", sep = '',end='')
+    print()
+    for actual in _class_set:
+        print("Actual:", actual, "\t\t\t\t\t", sep = '', end='')
+        row = "actual:" + actual
+        for predicts in _class_set:
+            column = "predicted:" + predicts
+            print(matrix_main[row + ',' + column], "\t\t\t\t\t", sep = '', end='')
+        print(matrix_actual_class_totals[actual])
+        print()
+    print("\t\t\t\t\t\t\t", sep = '', end = '')
+    for predicts in _class_set:
+        print(matrix_predict_class_totals[predicts], "\t\t\t\t\t", sep = '', end='')
+    print("\n\n")
 
 
 def apply_bayesian_Classifier():
