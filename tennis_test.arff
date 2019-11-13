@@ -1,0 +1,10 @@
+@relation tennis
+
+@attribute outlook { sunny, overcast, rain }
+@attribute temperature { hot, mild, cool }
+@attribute humidity { high, normal }
+@attribute wind { false, true }
+@attribute playTennis { no, yes}
+
+@data
+rain, hot, high, false, no
