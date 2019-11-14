@@ -303,7 +303,79 @@ def test_bayesian_Classifier():
 
 
 def apply_bayesian_Classifier():
-    print("Enter values of condition attributes... ")
+    print("Enter relation:")
+    relation = input()
+    while not relation:
+        print("Please enter a relation:")
+        relation = input()
+    choice = str()
+    print("Provide a bin file for", relation)
+    model_file = input()
+    while not os.path.exists(model_file) or model_file[-4:] != ".bin":
+        print("Please enter a valid bin file:")
+        model_file = input()
+    bin_file = open(model_file, 'r')
+    while choice != "2":
+        print("1. Enter a new case interactively.")
+        print("2. Quit.")
+        choice = input()
+        if choice == '1':
+            print("*Instructions*: Please write exactly one kind of attribute value from each condition attribute available from the specified relation", relation, "in this form, using the Tennis Relation example:")
+            print("sunny, hot, high, false, no")
+            print("; and that will be your case, ending with the class attribute:")
+            case = input()
+            case = case.replace(",", "")
+            case_list = case.split()
+
+            # Reading in Classifier
+            classes = dict()
+            a_posteris = dict()
+            line_number = 1
+            for line in bin_file:
+                if line_number == 1:
+                    if relation != line[:-1]:
+                        print("Error: Relation specified and bin's relation not the same:", relation, "and", line[:-1])
+                        return
+
+                else:
+                    apost_index = line.find(',')
+                    # print("apost_index", apost_index)
+                    if line.find('&') == -1:
+                        class_str = line[:apost_index]
+                        chance_str = line[apost_index + 1:-1]
+                        classes[class_str] = float(chance_str)
+                        # print("Class:", class_str, "line", chance_str)
+                    else:
+                        a_post_str = line[:apost_index]
+                        chance_str = line[apost_index + 1:]
+                        a_posteris[a_post_str] = float(chance_str)
+                line_number += 1
+
+            bin_file.close()
+
+            print("Finding prediction of datapoint:", )
+            classify_dict = {}
+            for c in classes:
+                classify = 1
+                for p_a in case_list:
+                    if p_a != case_list[-1]:
+                        if (p_a + '&' + c) in a_posteris:
+                            classify *= a_posteris[p_a + '&' + c]
+                        else:
+                            print("ERROR: an a_posteris could not be found:", p_a + '&' + c)
+                classify *= classes[c]  # Grab the probability of the current class and multiply it to P(X|p)
+                classify_dict[c] = classify  # We are comparing which class probability "version" is higher.
+
+            # Compare the class probabilities
+            classifier = int()
+            predicted = str()
+            for c in classify_dict:
+                if classify_dict[c] >= classifier:
+                    classifier = classify_dict[c]
+                    predicted = c
+
+            print("Classify_Dict for datapoint:", classify_dict)
+            print("Resulting Prediciton of case: ", predicted, "\n")
 
 
 # This is the top menu of the program
