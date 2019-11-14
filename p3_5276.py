@@ -13,8 +13,8 @@ import os.path  # File operations
 
 def read_ARFF(trainingEx):
     while not os.path.exists(trainingEx) or trainingEx[-5:] != ".arff":
-        print("Error: arff file could not be opened. Try again!")
-        trainingEx = input()
+        print("Error: arff file could not be opened! Check call param!")
+        return
 
     arff_file = open(trainingEx, "r")
     arff = {}  # Will be a dictionary identified by its key "relation", and holds dicts of attribute values, which are accessed by the attribute's name
@@ -128,6 +128,9 @@ def read_ARFF(trainingEx):
 def generate_bayesian_Classifier():
     print("Enter the filename of input data consisting of attributes and training examples in ARFF (Weka) format. (You might use the existing arffs in the data folder)")
     trainingEx = input()
+    while not os.path.exists(trainingEx) or trainingEx[-5:] != ".arff":
+        print("Error: arff file could not be opened. Try again!")
+        trainingEx = input()
     total_data_points, data_points, _class_set, attribute_values_set, attribute_dict, arff = read_ARFF(trainingEx)
 
     print("\n\n")
@@ -183,7 +186,7 @@ def test_bayesian_Classifier():
         model_file = input()
     print("Now enter a testing data file in ARFF format:")
     testing_file = input()
-    while not os.path.exists(testing_file):
+    while not os.path.exists(testing_file) or testing_file[-5:] != ".arff":
         print("Can't find the file, try again.")
         testing_file = input()
     bin_file = open(model_file, 'r')
