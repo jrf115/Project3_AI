@@ -7,13 +7,12 @@
 import os.path  # File operations
 
 
-# P(C|X) = P(X|C) * P(C)  /  P(X) (which are params below)
-def Bayes_Thm(XandC, rel_freq, const):
-    return (XandC * rel_freq) / const
+## P(C|X) = P(X|C) * P(C)  /  P(X) (which are params below)
+# Bayes_Thm(XandC, rel_freq, const):
 
 
 def read_ARFF(trainingEx):
-    while not os.path.exists(trainingEx):
+    while not os.path.exists(trainingEx) or trainingEx[-5:] != ".arff":
         print("Error: arff file could not be opened. Try again!")
         trainingEx = input()
 
