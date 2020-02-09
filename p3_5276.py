@@ -1,8 +1,10 @@
-############################
-#   John Fahringer         #
-#   AI & Heuristics Analyis#
-#   Project 3              #
-############################
+"""
+#   John Fahringer                                          #
+#   AI & Heuristics Analyis                                 #
+#   Project 3                                               #
+#   COPYRIGHT (C) 2020 John Fahringer (jrf5001@yahoo.com)   #
+#   All rights reserved.                                    #
+"""
 
 import os.path  # File operations
 
